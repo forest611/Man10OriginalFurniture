@@ -4,12 +4,13 @@ import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.event.Listener
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import red.man10.man10originalfurniture.menu.Event
 import red.man10.man10originalfurniture.menu.MainMenu
 
-class Man10OriginalFurniture : JavaPlugin() {
+class Man10OriginalFurniture : JavaPlugin() , Listener{
 
     companion object{
         const val OP = "myfurniture.op"
@@ -56,6 +57,7 @@ class Man10OriginalFurniture : JavaPlugin() {
                 exchangeItem = sender.inventory.itemInMainHand
                 config.set("exchange", exchangeItem)
                 saveConfig()
+                sender.sendMessage("§e§l設定完了")
                 return true
             }
 
@@ -63,20 +65,20 @@ class Man10OriginalFurniture : JavaPlugin() {
                 if (!sender.hasPermission(OP))return true
 
                 if (args.size!=2){
-                    sender.sendMessage("/mf add <mcid> 手に持っているアイテムを登録します")
+                    sender.sendMessage("§e§l/mf add <mcid> 手に持っているアイテムを登録します")
                     return true
                 }
 
                 val item = sender.inventory.itemInMainHand
 
                 if (!item.hasItemMeta()){
-                    sender.sendMessage("アイテムのCustomModelDataが設定されていない可能性があります")
+                    sender.sendMessage("§e§lアイテムのCustomModelDataが設定されていない可能性があります")
                     return true
                 }
 
                 Thread{
                     UserData.addItem(args[1],item)
-                    sender.sendMessage("登録完了 mcid:${args[1]} CMD:${item.itemMeta.customModelData}")
+                    sender.sendMessage("§e§l登録完了 mcid:${args[1]} CMD:${item.itemMeta.customModelData}")
                 }.start()
                 return true
             }
@@ -85,21 +87,21 @@ class Man10OriginalFurniture : JavaPlugin() {
                 if (!sender.hasPermission(OP))return true
 
                 if (args.size!=1){
-                    sender.sendMessage("/mf remove 手に持ってるアイテムをDBから削除します")
+                    sender.sendMessage("§e§l/mf remove 手に持ってるアイテムをDBから削除します")
                     return true
                 }
 
                 val item = sender.inventory.itemInMainHand
 
                 if (!item.hasItemMeta()){
-                    sender.sendMessage("アイテムのCustomModelDataが設定されていない可能性があります")
+                    sender.sendMessage("§e§lアイテムのCustomModelDataが設定されていない可能性があります")
                     return true
                 }
 
                 Thread{
 
                     UserData.removeItem(item.type,item.itemMeta.customModelData)
-                    sender.sendMessage("削除完了 CMD:${item.itemMeta.customModelData}")
+                    sender.sendMessage("§e§l削除完了 CMD:${item.itemMeta.customModelData}")
                 }.start()
 
                 return true
@@ -108,7 +110,14 @@ class Man10OriginalFurniture : JavaPlugin() {
             "rename" ->{
 
                 val data = UserData.userData[sender] ?: return true
-                data.rename(args.joinToString().replace(" rename",""),sender.inventory.itemInMainHand)
+
+                val str = StringBuilder()
+
+                for (i in 1 until args.size){
+                    str.append(args[i])
+                }
+
+                data.rename(str.toString(),sender.inventory.itemInMainHand)
 
                 return true
             }
@@ -116,9 +125,16 @@ class Man10OriginalFurniture : JavaPlugin() {
             "relore" ->{
 
                 val data = UserData.userData[sender] ?: return true
-                val str = args.joinToString().replace(" rename","").split(";").toMutableList()
 
-                data.relore(str,sender.inventory.itemInMainHand)
+                val str = StringBuilder()
+
+                for (i in 1 until args.size){
+                    str.append(args[i])
+                }
+
+                val strList = str.split(";").toMutableList()
+
+                data.relore(strList,sender.inventory.itemInMainHand)
 
                 return true
             }

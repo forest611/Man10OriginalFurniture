@@ -91,15 +91,17 @@ abstract class ListMenu(title:String,p:Player) : Menu(title,54,p) {
      */
     private fun addItemInformation(item: ItemStack): ItemStack {
 
-        val meta = item.itemMeta
+        val clone = item.clone()
 
-        val lore = meta.lore()!!.toMutableList()
+        val meta = clone.itemMeta
+
+        val lore = meta.lore()?.toMutableList()?: mutableListOf()
 
         lore.add(Component.text("§a左クリックで投票パール ${exchangeItem.amount}個と交換"))
         meta.lore(lore)
 
-        item.itemMeta = meta
+        clone.itemMeta = meta
 
-        return item
+        return clone
     }
 }

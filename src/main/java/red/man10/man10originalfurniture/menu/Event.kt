@@ -7,7 +7,9 @@ import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import red.man10.man10originalfurniture.Man10OriginalFurniture.Companion.plugin
+import red.man10.man10originalfurniture.UserData
 import red.man10.man10originalfurniture.menu.Menu.Companion.getID
 import red.man10.man10originalfurniture.menu.Menu.Companion.popStack
 
@@ -59,6 +61,13 @@ object Event : Listener{
         val menu = popStack(p) ?:return
 
         Bukkit.getScheduler().runTask(plugin, Runnable { menu.open() })
+    }
+
+    @EventHandler
+    fun login(e:PlayerJoinEvent){
+        Thread{
+            UserData.loadData(e.player)
+        }.start()
     }
 
 

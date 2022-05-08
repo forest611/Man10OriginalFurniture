@@ -51,8 +51,7 @@ class UserData {
         }
 
         val meta = item.itemMeta
-        name.replace("&","§")
-        meta.displayName(Component.text(name))
+        meta.displayName(Component.text(name.replace("&","§")))
         item.itemMeta = meta
 
         player.sendMessage("§a§l設定完了")
@@ -83,15 +82,15 @@ class UserData {
         val hand = player.inventory.itemInMainHand
 
         if (!hand.isSimilar(exchangeItem) || hand.amount < exchangeItem.amount){
-            player.sendMessage("利き手に投票パールを${exchangeItem.amount}個以上持ってください！")
+            player.sendMessage("§c§l利き手に投票パールを${exchangeItem.amount}個以上持ってください！")
             return
         }
 
         hand.amount = hand.amount - exchangeItem.amount
 
-        player.inventory.addItem(item)
+        player.inventory.addItem(item.clone())
 
-        player.sendMessage("購入しました")
+        player.sendMessage("§e§l購入しました")
 
     }
 
@@ -134,8 +133,8 @@ class UserData {
 
             val mysql = MySQLManager(plugin,"UserData")
 
-            mysql.execute("INSERT INTO user_data (player, uuid, created_item) " +
-                    "VALUES ('${mcid}', '${p.uniqueId}', '${Utility.itemToBase64(item)}')")
+            mysql.execute("INSERT INTO user_data (player, uuid, material, custom_model_data,  created_item) " +
+                    "VALUES ('${mcid}', '${p.uniqueId}', '${item.type.name}', ${item.itemMeta.customModelData},  '${Utility.itemToBase64(item)}')")
 
             if (p.isOnline){
                 loadData(p.player!!)
