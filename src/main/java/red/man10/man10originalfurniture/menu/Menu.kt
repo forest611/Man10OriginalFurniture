@@ -1,4 +1,4 @@
-package red.man10.man10originalfurniture
+package red.man10.man10originalfurniture.menu
 
 import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit

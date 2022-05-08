@@ -1,4 +1,4 @@
-package red.man10.man10originalfurniture
+package red.man10.man10originalfurniture.menu
 
 import org.bukkit.Bukkit
 import org.bukkit.Sound
@@ -8,8 +8,8 @@ import org.bukkit.event.Listener
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import red.man10.man10originalfurniture.Man10OriginalFurniture.Companion.plugin
-import red.man10.man10originalfurniture.Menu.Companion.getID
-import red.man10.man10originalfurniture.Menu.Companion.popStack
+import red.man10.man10originalfurniture.menu.Menu.Companion.getID
+import red.man10.man10originalfurniture.menu.Menu.Companion.popStack
 
 object Event : Listener{
 
