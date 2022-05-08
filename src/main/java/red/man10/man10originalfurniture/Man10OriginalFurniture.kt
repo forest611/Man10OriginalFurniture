@@ -107,6 +107,14 @@ class Man10OriginalFurniture : JavaPlugin() , Listener{
                 return true
             }
 
+            "help" ->{
+                sender.sendMessage("§e§l/mf rename <名前>             ... 持ってるアイテムの名前を設定する")
+                sender.sendMessage("§e§l/mf relore <説明1行目;説明2行目 ... 持ってるアイテムの説明を設定する")
+                sender.sendMessage("§e§l/mf set                      ... 設定したアイテムを登録する")
+
+                return true
+            }
+
             "rename" ->{
 
                 val data = UserData.userData[sender] ?: return true

@@ -3,5 +3,5 @@ version: 1.0
 main: red.man10.man10originalfurniture.Man10OriginalFurniture
 api-version: 1.17
 commands:
-  myf:
+  mf:
     default: op
