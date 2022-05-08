@@ -5,6 +5,7 @@ import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
+import red.man10.man10originalfurniture.Man10OriginalFurniture.Companion.exchangeItem
 
 
 /**
@@ -27,8 +28,20 @@ abstract class ListMenu(title:String,p:Player) : Menu(title,54,p) {
     /**
      * 一覧形式で表示させる時の雛型
      */
-    fun listInventory(): Inventory {
+    fun listInventory(values: MutableList<ItemStack>): Inventory {
 
+        var inc = 0
+
+        while (menu.getItem(44) == null){
+            if (values.size <= inc+page*45)break
+
+            val item = values[inc+page*45]
+
+            inc ++
+
+            menu.addItem(addItemInformation(item))
+
+        }
 
         setPageButton()
 
@@ -38,7 +51,7 @@ abstract class ListMenu(title:String,p:Player) : Menu(title,54,p) {
     /**
      * リロードとページ切り替えボタンを追加
      */
-    protected fun setPageButton(){
+    private fun setPageButton(){
         if (page!=0){
 
             val prevItem = ItemStack(Material.PAPER)
@@ -65,19 +78,28 @@ abstract class ListMenu(title:String,p:Player) : Menu(title,54,p) {
 
         }
 
-        val reloadItem = ItemStack(Material.COMPASS)
-        val reloadMeta = reloadItem.itemMeta
-        reloadMeta.displayName(Component.text("§6§lリロード"))
-        setID(reloadMeta, "reload")
-        reloadItem.itemMeta = reloadMeta
-        menu.setItem(49,reloadItem)
+//        val reloadItem = ItemStack(Material.COMPASS)
+//        val reloadMeta = reloadItem.itemMeta
+//        reloadMeta.displayName(Component.text("§6§lリロード"))
+//        setID(reloadMeta, "reload")
+//        reloadItem.itemMeta = reloadMeta
+//        menu.setItem(49,reloadItem)
     }
 
     /**
      * アイテムに情報をつける
      */
-    fun addItemInformation(): ItemStack {
+    private fun addItemInformation(item: ItemStack): ItemStack {
 
-        return ItemStack(Material.AIR)
+        val meta = item.itemMeta
+
+        val lore = meta.lore()!!.toMutableList()
+
+        lore.add(Component.text("§a左クリックで投票パール ${exchangeItem.amount}個と交換"))
+        meta.lore(lore)
+
+        item.itemMeta = meta
+
+        return item
     }
 }

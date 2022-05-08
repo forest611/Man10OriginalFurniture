@@ -5,6 +5,7 @@ import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemStack
+import red.man10.man10originalfurniture.Man10OriginalFurniture.Companion.exchangeItem
 import red.man10.man10originalfurniture.Man10OriginalFurniture.Companion.plugin
 import java.util.concurrent.ConcurrentHashMap
 
@@ -12,6 +13,19 @@ class UserData {
 
     var itemDictionary = ConcurrentHashMap<Pair<Material,Int>,ItemStack>()
     lateinit var player : Player
+
+    private fun checkItem(item:ItemStack):Boolean{
+
+        if (!item.hasItemMeta())return false
+
+        val material = item.type
+        val cmd = item.itemMeta.customModelData
+
+        if (itemDictionary[Pair(material,cmd)] != null)return true
+
+        return false
+
+    }
 
     fun setNewItem(item: ItemStack){
 
@@ -28,19 +42,6 @@ class UserData {
         itemDictionary[Pair(item.type,item.itemMeta.customModelData)] = item
 
         player.sendMessage("§a§l登録完了")
-    }
-
-    private fun checkItem(item:ItemStack):Boolean{
-
-        if (!item.hasItemMeta())return false
-
-        val material = item.type
-        val cmd = item.itemMeta.customModelData
-
-        if (itemDictionary[Pair(material,cmd)] != null)return true
-
-        return false
-
     }
 
     fun rename(name:String,item:ItemStack){
@@ -71,6 +72,26 @@ class UserData {
         item.itemMeta = meta
 
         player.sendMessage("§a§l設定完了")
+
+    }
+
+    fun buyItem(mock: ItemStack){
+        if (!checkItem(mock))return
+
+        val item = itemDictionary[Pair(mock.type,mock.itemMeta.customModelData)]?:return
+
+        val hand = player.inventory.itemInMainHand
+
+        if (!hand.isSimilar(exchangeItem) || hand.amount < exchangeItem.amount){
+            player.sendMessage("利き手に投票パールを${exchangeItem.amount}個以上持ってください！")
+            return
+        }
+
+        hand.amount = hand.amount - exchangeItem.amount
+
+        player.inventory.addItem(item)
+
+        player.sendMessage("購入しました")
 
     }
 

@@ -1,10 +1,13 @@
 package red.man10.man10originalfurniture
 
+import org.bukkit.Material
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.java.JavaPlugin
 import red.man10.man10originalfurniture.menu.Event
+import red.man10.man10originalfurniture.menu.MainMenu
 
 class Man10OriginalFurniture : JavaPlugin() {
 
@@ -12,7 +15,10 @@ class Man10OriginalFurniture : JavaPlugin() {
         const val OP = "myfurniture.op"
         const val USER = "myfurniture.user"
         const val prefix = "§a§l[MyFurniture]"
+
         lateinit var plugin : JavaPlugin
+
+        lateinit var exchangeItem : ItemStack
     }
 
     override fun onEnable() {
@@ -21,6 +27,10 @@ class Man10OriginalFurniture : JavaPlugin() {
         plugin = this
 
         server.pluginManager.registerEvents(Event,this)
+
+        saveDefaultConfig()
+
+        exchangeItem = config.getItemStack("exchange")?: ItemStack(Material.STONE)
     }
 
     override fun onDisable() {
@@ -34,6 +44,8 @@ class Man10OriginalFurniture : JavaPlugin() {
 
         if (args.isEmpty()){
 
+            MainMenu(sender).open()
+
             return true
         }
 
@@ -41,6 +53,10 @@ class Man10OriginalFurniture : JavaPlugin() {
 
             "exchangeItem" ->{
 
+                exchangeItem = sender.inventory.itemInMainHand
+                config.set("exchange", exchangeItem)
+                saveConfig()
+                return true
             }
 
             "add" ->{//mf add <mcid>
@@ -62,6 +78,7 @@ class Man10OriginalFurniture : JavaPlugin() {
                     UserData.addItem(args[1],item)
                     sender.sendMessage("登録完了 mcid:${args[1]} CMD:${item.itemMeta.customModelData}")
                 }.start()
+                return true
             }
 
             "remove" ->{
@@ -85,6 +102,7 @@ class Man10OriginalFurniture : JavaPlugin() {
                     sender.sendMessage("削除完了 CMD:${item.itemMeta.customModelData}")
                 }.start()
 
+                return true
             }
 
             "rename" ->{
@@ -92,6 +110,7 @@ class Man10OriginalFurniture : JavaPlugin() {
                 val data = UserData.userData[sender] ?: return true
                 data.rename(args.joinToString().replace(" rename",""),sender.inventory.itemInMainHand)
 
+                return true
             }
 
             "relore" ->{
@@ -100,6 +119,8 @@ class Man10OriginalFurniture : JavaPlugin() {
                 val str = args.joinToString().replace(" rename","").split(";").toMutableList()
 
                 data.relore(str,sender.inventory.itemInMainHand)
+
+                return true
             }
 
             "set" ->{
