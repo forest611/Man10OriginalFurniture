@@ -88,6 +88,9 @@ class UserData {
 
         hand.amount = hand.amount - exchangeItem.amount
 
+        MySQLManager.mysqlQueue.add("INSERT INTO log (player, uuid, material, custom_model_data, display_name, date) " +
+                "VALUES ('${player.name}', '${player.uniqueId}', '${item.type.name}', ${item.itemMeta.customModelData}, '${MySQLManager.escapeStringForMySQL(item.itemMeta.displayName)}', DEFAULT)")
+
         player.inventory.addItem(item.clone())
 
         player.sendMessage("§e§l購入しました")

@@ -30,8 +30,9 @@ class Man10OriginalFurniture : JavaPlugin() , Listener{
         server.pluginManager.registerEvents(Event,this)
 
         saveDefaultConfig()
-
         exchangeItem = config.getItemStack("exchange")?: ItemStack(Material.STONE)
+
+        MySQLManager.mysqlQueue(this,"Man10OriginalFurniture")
     }
 
     override fun onDisable() {
@@ -55,7 +56,7 @@ class Man10OriginalFurniture : JavaPlugin() , Listener{
             "exchangeItem" ->{
 
                 exchangeItem = sender.inventory.itemInMainHand
-                config.set("exchange", exchangeItem)
+                config.set("exchange", exchangeItem.clone())
                 saveConfig()
                 sender.sendMessage("§e§l設定完了")
                 return true
