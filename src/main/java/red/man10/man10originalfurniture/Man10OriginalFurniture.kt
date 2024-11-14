@@ -77,6 +77,12 @@ class Man10OriginalFurniture : JavaPlugin() , Listener{
                     return true
                 }
 
+                //家具以外を弾くための臨時措置
+                if(item.type!=Material.STONE_HOE){
+                    sender.sendMessage("§e§l石のクワ以外のアイテムを登録することはできません")
+                    return true
+                }
+
                 Thread{
                     UserData.addItem(args[1],item)
                     sender.sendMessage("§e§l登録完了 mcid:${args[1]} CMD:${item.itemMeta.customModelData}")
@@ -152,8 +158,16 @@ class Man10OriginalFurniture : JavaPlugin() , Listener{
 
                 val data = UserData.userData[sender] ?: return true
 
+                val item=sender.inventory.itemInMainHand
+
+
+                if(item.type!=Material.STONE_HOE){
+                    sender.sendMessage("§e§l石のクワ以外のアイテムを登録することはできません")
+                    return true
+                }
+
                 Thread{
-                    data.setNewItem(sender.inventory.itemInMainHand)
+                    data.setNewItem(item)
                 }.start()
             }
 

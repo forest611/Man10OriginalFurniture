@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.Material
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemFlag
 import org.bukkit.inventory.ItemStack
 import red.man10.man10originalfurniture.Man10OriginalFurniture.Companion.exchangeItem
 import red.man10.man10originalfurniture.Man10OriginalFurniture.Companion.plugin
@@ -13,6 +14,7 @@ class UserData {
 
     var itemDictionary = ConcurrentHashMap<Pair<Material,Int>,ItemStack>()
     lateinit var player : Player
+    private val namePrefix="§f[§ePvt家具§r§f]§l"
 
     private fun checkItem(item:ItemStack):Boolean{
 
@@ -51,7 +53,7 @@ class UserData {
         }
 
         val meta = item.itemMeta
-        meta.displayName(Component.text(name.replace("&","§")))
+        meta.displayName(Component.text(namePrefix+name))
         item.itemMeta = meta
 
         player.sendMessage("§a§l設定完了")
@@ -65,8 +67,9 @@ class UserData {
 
         val meta = item.itemMeta
         for (i in 0 until lore.size){
-            lore[i] = lore[i].replace("&","§")
+            lore[i] = "§f"+lore[i]
         }
+        lore.add("§ecreated by ${player.name}")
         meta.lore = lore
         item.itemMeta = meta
 
@@ -77,7 +80,14 @@ class UserData {
     fun buyItem(mock: ItemStack){
         if (!checkItem(mock))return
 
-        val item = itemDictionary[Pair(mock.type,mock.itemMeta.customModelData)]?:return
+        val rawItem = itemDictionary[Pair(mock.type,mock.itemMeta.customModelData)]?:return
+        val item=ItemStack(rawItem.type)
+        item.addItemFlags(ItemFlag.HIDE_ATTRIBUTES)
+        val meta=item.itemMeta
+        meta.displayName(Component.text(namePrefix))
+        meta.lore(listOf(Component.text("§ecreated by ${player.name}")))
+        meta.setCustomModelData(rawItem.itemMeta.customModelData)
+        item.itemMeta=meta
 
         val hand = player.inventory.itemInMainHand
 
